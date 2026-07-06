@@ -1,0 +1,19 @@
+# Secrets & Tokens — NIEMALS committen
+.env
+.env.local
+tokens.json
+
+# Generierte Daten
+*.csv
+!*.example.csv
+
+# Node
+node_modules/
+dist/
+*.log
+npm-debug.log*
+
+# OS / Editor
+.DS_Store
+.idea/
+.vscode/
