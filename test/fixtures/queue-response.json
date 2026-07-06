@@ -1,0 +1,37 @@
+{
+  "_currentSong": {
+    "_id": "req_current",
+    "track": {
+      "providerId": "VID_CURRENT",
+      "provider": "youtube",
+      "title": "Now Playing, Live",
+      "url": "https://youtu.be/VID_CURRENT",
+      "duration": 210
+    },
+    "user": { "displayName": "AliceStreamer", "name": "alice" }
+  },
+  "queue": [
+    {
+      "_id": "req_1",
+      "track": {
+        "providerId": "VID_ONE",
+        "provider": "youtube",
+        "title": "Queued One",
+        "url": "https://youtu.be/VID_ONE",
+        "duration": 180
+      },
+      "user": { "displayName": "Bob", "name": "bob" }
+    },
+    {
+      "_id": "req_2",
+      "track": {
+        "providerId": "SC_TWO",
+        "provider": "soundcloud",
+        "title": "Queued Two",
+        "url": "https://soundcloud.com/x/two",
+        "duration": 240
+      },
+      "user": { "name": "carol" }
+    }
+  ]
+}
