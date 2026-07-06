@@ -118,7 +118,7 @@ Ein CLI-Tool mit zwei Befehlen:
 ```
 .gitignore              # zuerst — schützt .env, tokens.json, CSV
 .env.example            # Vorlage der benötigten Variablen
-README.md               # Setup & Nutzung für Menschen
+README.md               # Setup & Nutzung für Menschen (auf Englisch)
 CLAUDE.md               # Kontext & Konventionen für Claude
 package.json
 tsconfig.json
