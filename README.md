@@ -19,7 +19,23 @@ UTF-8 CSV file, giving you a permanent history.
 - Node.js 20 or newer.
 - A Nightbot account and a registered Nightbot application.
 
-## Setup
+## Install (end users)
+
+If you just want to run the tool, grab the packaged release instead of cloning:
+
+1. Download `nightbot-queue-save-<version>.zip` from the
+   [Releases page](https://github.com/elricco/nightbot-queue-save/releases/latest)
+   and unzip it.
+2. Open a terminal in the unzipped folder and install the runtime dependencies:
+
+   ```bash
+   npm install --omit=dev
+   ```
+
+3. Follow steps 2–3 of **Setup** below to register the Nightbot app and create
+   your `.env`, then run `npm run login` and `npm run watch`.
+
+## Setup (from source)
 
 1. Install dependencies:
 
