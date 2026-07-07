@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { buildConfig } from "../src/config.js";
+import { buildConfig, buildPublicConfig } from "../src/config.js";
 
 describe("buildConfig", () => {
   it("applies defaults when optional vars are missing", () => {
@@ -37,5 +37,33 @@ describe("buildConfig", () => {
     expect(() => buildConfig({ ...base, POLL_INTERVAL_SECONDS: "5s" })).toThrow(/POLL_INTERVAL_SECONDS/);
     expect(() => buildConfig({ ...base, POLL_INTERVAL_SECONDS: "0" })).toThrow(/POLL_INTERVAL_SECONDS/);
     expect(() => buildConfig({ ...base, POLL_INTERVAL_SECONDS: "-3" })).toThrow(/POLL_INTERVAL_SECONDS/);
+  });
+});
+
+describe("buildPublicConfig", () => {
+  it("derives a per-channel CSV path and 10s default poll interval", () => {
+    const cfg = buildPublicConfig({}, "elricco1978");
+    expect(cfg.csvPath).toBe("./song-requests-elricco1978.csv");
+    expect(cfg.pollIntervalSeconds).toBe(10);
+    expect(cfg.apiBaseUrl).toBe("https://api.nightbot.tv");
+  });
+
+  it("lets CSV_PATH override the per-channel default", () => {
+    const cfg = buildPublicConfig({ CSV_PATH: "/tmp/out.csv" }, "elricco1978");
+    expect(cfg.csvPath).toBe("/tmp/out.csv");
+  });
+
+  it("reads PUBLIC_POLL_INTERVAL_SECONDS", () => {
+    const cfg = buildPublicConfig({ PUBLIC_POLL_INTERVAL_SECONDS: "20" }, "x");
+    expect(cfg.pollIntervalSeconds).toBe(20);
+  });
+
+  it("throws when PUBLIC_POLL_INTERVAL_SECONDS is not a positive number", () => {
+    expect(() => buildPublicConfig({ PUBLIC_POLL_INTERVAL_SECONDS: "0" }, "x")).toThrow(
+      /PUBLIC_POLL_INTERVAL_SECONDS/,
+    );
+    expect(() => buildPublicConfig({ PUBLIC_POLL_INTERVAL_SECONDS: "abc" }, "x")).toThrow(
+      /PUBLIC_POLL_INTERVAL_SECONDS/,
+    );
   });
 });
