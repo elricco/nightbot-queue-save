@@ -37,3 +37,24 @@ in eine UTF-8-CSV (mit BOM) schreibt. Details im Design-Spec unter
 - Queue: `GET /1/song_requests/queue` (Scope `song_requests_queue`).
 - OAuth: `https://api.nightbot.tv/oauth2/authorize` und `/oauth2/token`.
 - Access-Token 30 Tage, Refresh-Token 60 Tage; Auto-Refresh vor Ablauf.
+
+## Releasing
+
+SemVer, Tags im Format `vX.Y.Z`. Die Release-Zip enthält nur Betriebs-Dateien
+(`src/`, `package.json`, `package-lock.json`, `tsconfig.json`, `.env.example`,
+`README.md`) — gebaut über `scripts/make-release.sh`; `release/` ist gitignored.
+`tsx` ist eine Runtime-`dependency` (Betrieb via `npm install --omit=dev`).
+
+Schritte für eine neue Version:
+
+1. `version` in `package.json` anheben (SemVer).
+2. `CHANGELOG.md` um einen Abschnitt `## [X.Y.Z] — YYYY-MM-DD` ergänzen und den
+   Link-Verweis am Ende der Datei setzen.
+3. `npm run typecheck && npm test` — muss grün sein.
+4. `npm run release` — erzeugt `release/nightbot-queue-save-X.Y.Z.zip`.
+   Optional verifizieren: entpacken, `npm ci --omit=dev`, `npm run start -- bogus`.
+5. Commit + Push der Doku-/Versionsänderungen.
+6. `git tag -a vX.Y.Z -m "vX.Y.Z — <Titel>"` und `git push origin vX.Y.Z`.
+7. `gh release create vX.Y.Z --title "…" --notes-file <notes> release/…zip`.
+
+Release-Notes/README sind bewusst auf Englisch (public-facing).
