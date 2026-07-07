@@ -27,6 +27,12 @@ UTF-8 CSV file, giving you a permanent history.
    npm install
    ```
 
+   To run the tool only (no test tooling), a lean install is enough:
+
+   ```bash
+   npm install --omit=dev
+   ```
+
 2. Register an application at <https://nightbot.tv/account/applications>:
    - Set the **Redirect URI** to `http://localhost:8080/callback`
      (must match `NIGHTBOT_REDIRECT_URI`).
@@ -80,3 +86,17 @@ your client secret or tokens.
 npm test        # run the unit tests
 npm run typecheck
 ```
+
+## Building a release
+
+Create a zip containing only the files needed to install and run the tool
+(source, `package.json`, lockfile, `tsconfig.json`, `.env.example`, README —
+no tests, docs, or `node_modules`):
+
+```bash
+npm run release
+```
+
+The archive is written to `release/nightbot-queue-save-<version>.zip`. To use it,
+unzip, then inside the folder run `npm install --omit=dev` followed by
+`npm run login` and `npm run watch`.
