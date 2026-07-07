@@ -1,6 +1,6 @@
 import { describe, it, expect, afterEach } from "vitest";
 import { existsSync, rmSync } from "node:fs";
-import { buildAuthorizeUrl, needsRefresh, writeTokens, readTokens } from "../src/auth.js";
+import { buildAuthorizeUrl, needsRefresh, writeTokens, readTokens, getValidAccessToken, AuthError } from "../src/auth.js";
 import type { Config, Tokens } from "../src/types.js";
 
 const cfg: Config = {
@@ -48,5 +48,13 @@ describe("token storage round-trip", () => {
   });
   it("readTokens returns null when the file is missing", () => {
     expect(readTokens("./test/no-such-tokens.json")).toBeNull();
+  });
+});
+
+describe("getValidAccessToken", () => {
+  it("throws AuthError when no tokens file exists", async () => {
+    await expect(
+      getValidAccessToken({ ...cfg, tokensPath: "./test/no-such-tokens-xyz.json" })
+    ).rejects.toBeInstanceOf(AuthError);
   });
 });

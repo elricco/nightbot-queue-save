@@ -1,4 +1,4 @@
-import { existsSync, readFileSync, appendFileSync, writeFileSync } from "node:fs";
+import { existsSync, readFileSync, appendFileSync, writeFileSync, statSync } from "node:fs";
 import type { Song } from "./types.js";
 
 const BOM = "﻿";
@@ -57,7 +57,8 @@ function songToFields(song: Song): string[] {
 }
 
 export function appendSong(path: string, song: Song): void {
-  if (!existsSync(path)) {
+  const needsHeader = !existsSync(path) || statSync(path).size === 0;
+  if (needsHeader) {
     writeFileSync(path, BOM + formatRow(HEADER) + "\n", "utf8");
   }
   appendFileSync(path, formatRow(songToFields(song)) + "\n", "utf8");

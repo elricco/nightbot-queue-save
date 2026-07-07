@@ -31,4 +31,11 @@ describe("buildConfig", () => {
       /NIGHTBOT_CLIENT_SECRET/
     );
   });
+
+  it("throws when POLL_INTERVAL_SECONDS is not a positive number", () => {
+    const base = { NIGHTBOT_CLIENT_ID: "id", NIGHTBOT_CLIENT_SECRET: "secret" };
+    expect(() => buildConfig({ ...base, POLL_INTERVAL_SECONDS: "5s" })).toThrow(/POLL_INTERVAL_SECONDS/);
+    expect(() => buildConfig({ ...base, POLL_INTERVAL_SECONDS: "0" })).toThrow(/POLL_INTERVAL_SECONDS/);
+    expect(() => buildConfig({ ...base, POLL_INTERVAL_SECONDS: "-3" })).toThrow(/POLL_INTERVAL_SECONDS/);
+  });
 });
