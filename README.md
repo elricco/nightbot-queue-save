@@ -88,6 +88,22 @@ npm run scrape https://nightbot.tv/t/<username>/song_requests
 
 Each channel is written to its own CSV (`./song-requests-<username>.csv` by default; `CSV_PATH` overrides). Press `Ctrl-C` to stop.
 
+## Optional: YouTube playlist sync
+
+Alongside the CSV, the tool can add every polled **YouTube** song to a playlist on your own YouTube account. It works in both `watch` and `scrape` mode. It is entirely optional: leave `YOUTUBE_PLAYLIST_ID` empty and nothing changes.
+
+Setup (one-time):
+
+1. In the [Google Cloud Console](https://console.cloud.google.com/), create a project and enable the **YouTube Data API v3**.
+2. Create an **OAuth client ID** (Desktop or Web) with the redirect URI `http://localhost:8080/callback`.
+3. Put the client ID and secret into `.env` (`YOUTUBE_CLIENT_ID`, `YOUTUBE_CLIENT_SECRET`).
+4. Create a playlist in YouTube (public, unlisted, or private — your choice), copy its ID, and set `YOUTUBE_PLAYLIST_ID`.
+5. Run `npm run login:youtube` once to authorize (writes `youtube-tokens.json`).
+
+Then `npm run watch` or `npm run scrape <url>` will append new YouTube songs to that playlist in addition to the CSV.
+
+Notes: the playlist keeps whatever visibility you set on it — the tool never changes it. Non-YouTube requests (e.g. SoundCloud) are skipped. The YouTube Data API has a default quota of 10,000 units/day and each added song costs 50 units (~200 songs/day); if the quota is exhausted the playlist sync pauses for the rest of the run and prints a notice, while CSV logging continues.
+
 ## CSV format
 
 UTF-8 with a BOM (so Excel shows accented characters correctly) and RFC-4180 quoting. Columns:

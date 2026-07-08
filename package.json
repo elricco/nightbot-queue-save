@@ -12,6 +12,7 @@
   ],
   "scripts": {
     "login": "tsx src/index.ts login",
+    "login:youtube": "tsx src/index.ts login:youtube",
     "watch": "tsx src/index.ts watch",
     "scrape": "tsx src/index.ts scrape",
     "start": "tsx src/index.ts",
