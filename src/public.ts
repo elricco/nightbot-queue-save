@@ -1,3 +1,5 @@
+import type { RawQueue } from "./nightbot.js";
+
 export function parsePublicUrl(input: string): { provider: string; username: string } {
   const trimmed = input.trim();
   if (!trimmed) throw new Error("Empty URL");
@@ -16,4 +18,38 @@ export function parsePublicUrl(input: string): { provider: string; username: str
     );
   }
   return { provider, username };
+}
+
+export async function resolveChannelId(
+  provider: string,
+  username: string,
+  apiBaseUrl: string,
+): Promise<string> {
+  const url = `${apiBaseUrl}/1/channels/${encodeURIComponent(provider)}/${encodeURIComponent(username)}`;
+  const res = await fetch(url);
+  if (res.status === 404) {
+    throw new Error(`Channel not found: ${provider}/${username}`);
+  }
+  if (!res.ok) {
+    throw new Error(`Channel lookup failed: ${res.status} ${res.statusText}`);
+  }
+  const data = (await res.json()) as { channel?: { _id?: string } };
+  const id = data.channel?._id;
+  if (!id) throw new Error(`Channel lookup returned no id for ${provider}/${username}`);
+  return id;
+}
+
+export async function fetchPublicQueue(channelId: string, apiBaseUrl: string): Promise<RawQueue> {
+  const res = await fetch(`${apiBaseUrl}/1/song_requests/queue`, {
+    headers: { "Nightbot-Channel": channelId },
+  });
+  if (res.status === 429) {
+    const err = new Error("Rate limited") as Error & { status?: number };
+    err.status = 429;
+    throw err;
+  }
+  if (!res.ok) {
+    throw new Error(`Queue request failed: ${res.status} ${res.statusText}`);
+  }
+  return (await res.json()) as RawQueue;
 }
