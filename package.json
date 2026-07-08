@@ -1,6 +1,6 @@
 {
   "name": "nightbot-queue-save",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "Persist the Nightbot song-request queue to a CSV file.",
   "type": "module",
   "engines": { "node": ">=20" },

@@ -2,6 +2,27 @@
 
 All notable changes to this project are documented here. The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.3.0] — 2026-07-08
+
+Adds an optional **YouTube playlist sync**: alongside the CSV, every polled YouTube song can be added to a playlist on your own YouTube account, in both `watch` and `scrape` mode. The CSV stays the source of truth — the sync is entirely optional and never interferes with CSV logging.
+
+### Added
+
+- **YouTube playlist sync** (opt-in via `YOUTUBE_PLAYLIST_ID`): newly-seen YouTube song requests are appended to a fixed playlist in your own account, in addition to the CSV. Works in both `watch` and `scrape` mode. Non-YouTube requests (e.g. SoundCloud) are skipped.
+- **`npm run login:youtube`** — one-time Google OAuth2 authorization (offline access) that stores `youtube-tokens.json`; access tokens refresh automatically, preserving the long-lived refresh token that Google omits on refresh responses.
+- **Playlist-side de-duplication** seeded from the playlist's actual contents at startup, independent of the CSV — enabling the feature later or restarting never re-adds songs already in the playlist.
+- New `.env` settings: `YOUTUBE_CLIENT_ID`, `YOUTUBE_CLIENT_SECRET`, `YOUTUBE_REDIRECT_URI`, `YOUTUBE_PLAYLIST_ID`.
+- Shared OAuth callback server extracted into `oauth-callback.ts`, reused by both the Nightbot and YouTube logins (behaviour-preserving for the existing `npm run login`).
+
+### Notes
+
+- The YouTube Data API has a default quota of 10,000 units/day and each added song costs 50 units (~200 songs/day); if the quota is exhausted the sync pauses for the rest of the run with a notice, while CSV logging continues.
+- The playlist keeps whatever visibility (public/unlisted/private) you set on it — the tool never changes it. A partial or missing YouTube configuration degrades to CSV-only with a warning, never aborting the run.
+
+### Security
+
+- `youtube-tokens.json` is git-ignored and written with `0600` permissions; OAuth client secrets and tokens are never logged.
+
 ## [0.2.0] — 2026-07-08
 
 Adds a second, credential-free way to capture a queue. **API mode** (`watch`) is for the channel operator reading their own queue via OAuth; the new **scrape mode** can be used by anyone to follow any publicly viewable queue by its URL.
@@ -38,5 +59,6 @@ Initial release. A local CLI that polls your Nightbot song-request queue and app
 - No runtime vulnerabilities (`npm audit` is clean).
 - `.env`, `tokens.json`, and generated `*.csv` files are git-ignored and never committed. The token file is written with `0600` permissions.
 
+[0.3.0]: https://github.com/elricco/nightbot-queue-save/releases/tag/v0.3.0
 [0.2.0]: https://github.com/elricco/nightbot-queue-save/releases/tag/v0.2.0
 [0.1.0]: https://github.com/elricco/nightbot-queue-save/releases/tag/v0.1.0
