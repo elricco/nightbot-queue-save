@@ -10,6 +10,10 @@ const SCOPE = "https://www.googleapis.com/auth/youtube";
 // Marker error: signals the sync should pause for the rest of the run.
 export class YouTubeAuthError extends Error {
   readonly pauseSync = true as const;
+  constructor(message?: string) {
+    super(message);
+    this.name = "YouTubeAuthError";
+  }
 }
 
 export function buildYouTubeAuthorizeUrl(config: YouTubeConfig, state: string): string {

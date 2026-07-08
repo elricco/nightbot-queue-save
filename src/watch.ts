@@ -89,7 +89,7 @@ export async function runWatchLoop(
       }
       if (sink) {
         try {
-          await sink.push(extractSongs(response as RawQueue, new Date().toISOString()));
+          await sink.push(extractSongs(response, new Date().toISOString()));
         } catch (err) {
           console.error(`Playlist sync error: ${(err as Error).message}`);
         }

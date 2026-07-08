@@ -2,6 +2,10 @@ const API_BASE = "https://www.googleapis.com/youtube/v3";
 
 export class QuotaExceededError extends Error {
   readonly pauseSync = true as const;
+  constructor(message?: string) {
+    super(message);
+    this.name = "QuotaExceededError";
+  }
 }
 
 export interface PlaylistItemsPage {

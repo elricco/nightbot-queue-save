@@ -32,7 +32,7 @@ export function createPlaylistSink(opts: PlaylistSinkOptions): PlaylistSink {
         } catch (err) {
           if (isPauseSync(err)) {
             paused = true;
-            log(`YouTube playlist sync paused for this run: ${err.message} CSV logging continues.`);
+            log(`YouTube playlist sync paused for this run: ${err.message} — CSV logging continues.`);
             return;
           }
           log(`Playlist insert failed for ${song.trackId} (will retry): ${(err as Error).message}`);
