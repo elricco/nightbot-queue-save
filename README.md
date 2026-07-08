@@ -97,8 +97,9 @@ Setup (one-time):
 1. In the [Google Cloud Console](https://console.cloud.google.com/), create a project and enable the **YouTube Data API v3**.
 2. Create an **OAuth client ID** (Desktop or Web) with the redirect URI `http://localhost:8080/callback`.
 3. Put the client ID and secret into `.env` (`YOUTUBE_CLIENT_ID`, `YOUTUBE_CLIENT_SECRET`).
-4. Create a playlist in YouTube (public, unlisted, or private — your choice), copy its ID, and set `YOUTUBE_PLAYLIST_ID`.
-5. Run `npm run login:youtube` once to authorize (writes `youtube-tokens.json`).
+4. Create a playlist in YouTube and set its ID as `YOUTUBE_PLAYLIST_ID`. YouTube has no "new empty playlist" button — you create a playlist by adding at least one video to it: open any video, click **Save**, choose **New playlist**, then name it and pick its visibility (public, unlisted, or private). It's a little annoying, but that's currently the only way; the seed video just stays in the playlist (harmless).
+5. Find the playlist ID in the playlist's URL: it is the part right after `list=` and before the next `&`. The reliable way to get that URL is to right-click the playlist in your library and choose **Copy link** — if you just open a playlist that has only one video, the browser strips everything after the video ID from the address bar. A copied link looks like `https://www.youtube.com/watch?v=EXAMPLEvid1&list=PLexamplePlaylistId&pp=EXAMPLEppToken`, where the ID is `PLexamplePlaylistId`.
+6. Run `npm run login:youtube` once to authorize (writes `youtube-tokens.json`).
 
 Then `npm run watch` or `npm run scrape <url>` will append new YouTube songs to that playlist in addition to the CSV.
 
