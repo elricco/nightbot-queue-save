@@ -26,6 +26,15 @@ describe("buildConfig", () => {
     expect(cfg.csvPath).toBe("/tmp/out.csv");
   });
 
+  it("treats an empty CSV_PATH as unset and falls back to the default", () => {
+    const cfg = buildConfig({
+      NIGHTBOT_CLIENT_ID: "id",
+      NIGHTBOT_CLIENT_SECRET: "secret",
+      CSV_PATH: "",
+    });
+    expect(cfg.csvPath).toBe("./song-requests.csv");
+  });
+
   it("throws when required vars are missing", () => {
     expect(() => buildConfig({ NIGHTBOT_CLIENT_ID: "id" })).toThrow(
       /NIGHTBOT_CLIENT_SECRET/
@@ -51,6 +60,11 @@ describe("buildPublicConfig", () => {
   it("lets CSV_PATH override the per-channel default", () => {
     const cfg = buildPublicConfig({ CSV_PATH: "/tmp/out.csv" }, "elricco1978");
     expect(cfg.csvPath).toBe("/tmp/out.csv");
+  });
+
+  it("treats an empty CSV_PATH as unset and falls back to the per-channel default", () => {
+    const cfg = buildPublicConfig({ CSV_PATH: "" }, "elricco1978");
+    expect(cfg.csvPath).toBe("./song-requests-elricco1978.csv");
   });
 
   it("reads PUBLIC_POLL_INTERVAL_SECONDS", () => {
