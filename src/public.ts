@@ -1,5 +1,9 @@
-import type { RawQueue } from "./nightbot.js";
+import { checkQueueResponse, type RawQueue } from "./nightbot.js";
 
+// A public queue URL looks like https://nightbot.tv/t/<username>/song_requests.
+// `provider` is the first path segment (e.g. `t`, Nightbot's short code for
+// twitch) — it is NOT normalized here because the channels endpoint accepts it
+// verbatim as `/1/channels/{provider}/{username}`.
 export function parsePublicUrl(input: string): { provider: string; username: string } {
   const trimmed = input.trim();
   if (!trimmed) throw new Error("Empty URL");
@@ -43,13 +47,6 @@ export async function fetchPublicQueue(channelId: string, apiBaseUrl: string): P
   const res = await fetch(`${apiBaseUrl}/1/song_requests/queue`, {
     headers: { "Nightbot-Channel": channelId },
   });
-  if (res.status === 429) {
-    const err = new Error("Rate limited") as Error & { status?: number };
-    err.status = 429;
-    throw err;
-  }
-  if (!res.ok) {
-    throw new Error(`Queue request failed: ${res.status} ${res.statusText}`);
-  }
+  checkQueueResponse(res);
   return (await res.json()) as RawQueue;
 }
