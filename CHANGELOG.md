@@ -4,6 +4,31 @@ All notable changes to this project are documented here. The format is based on
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project
 adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.2.0] — 2026-07-08
+
+Adds a second, credential-free way to capture a queue. **API mode** (`watch`) is
+for the channel operator reading their own queue via OAuth; the new **scrape
+mode** can be used by anyone to follow any publicly viewable queue by its URL.
+
+### Added
+
+- **Scrape mode** (`npm run scrape <url>`) watches any publicly viewable Nightbot
+  queue by its public URL (e.g. `https://nightbot.tv/t/<username>/song_requests`)
+  — no OAuth, no login, no credentials. It resolves the channel via the public
+  `GET /1/channels/{provider}/{username}` endpoint and reads the same public
+  queue JSON the Nightbot website uses (`Nightbot-Channel` header).
+- **Per-channel CSV** by default in scrape mode (`./song-requests-<username>.csv`),
+  so following multiple channels never mixes their songs; `CSV_PATH` still overrides.
+- Separate **`PUBLIC_POLL_INTERVAL_SECONDS`** (default 10s) for scrape mode, kept
+  politely higher than the API mode's 5s against the unauthenticated endpoint.
+- Shared `runWatchLoop` powering both modes, so dedup, CSV append, SIGINT
+  handling, and 429 backoff behave identically in API and scrape mode.
+
+### Fixed
+
+- An empty `CSV_PATH=` in `.env` is now treated as unset and falls back to the
+  default path, instead of producing an empty path (`ENOENT ... open ''`).
+
 ## [0.1.0] — 2026-07-07
 
 Initial release. A local CLI that polls your Nightbot song-request queue and
@@ -37,4 +62,5 @@ even after songs have played and left the queue.
 - `.env`, `tokens.json`, and generated `*.csv` files are git-ignored and never
   committed. The token file is written with `0600` permissions.
 
+[0.2.0]: https://github.com/elricco/nightbot-queue-save/releases/tag/v0.2.0
 [0.1.0]: https://github.com/elricco/nightbot-queue-save/releases/tag/v0.1.0

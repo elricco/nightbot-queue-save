@@ -8,6 +8,11 @@ Lokales CLI-Tool, das die Nightbot-Song-Request-Queue pollt und jeden neuen Song
 in eine UTF-8-CSV (mit BOM) schreibt. Details im Design-Spec unter
 `docs/superpowers/specs/2026-07-06-nightbot-queue-save-design.md`.
 
+Zwei Modi: **API-Mode** (`login` + `watch`) ist für den Channel-Betreiber selbst
+(OAuth, eigene Queue). **Scrape-Mode** (`scrape`) kann von jedermann für jede
+öffentlich einsehbare Queue genutzt werden — ohne Account, ohne Login. Design
+unter `docs/superpowers/specs/2026-07-07-public-mode-design.md`.
+
 ## Befehle
 
 - `npm run login` — OAuth2-Login (lokaler Callback-Server), schreibt `tokens.json`.

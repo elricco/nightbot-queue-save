@@ -7,6 +7,11 @@ UTF-8 CSV file, giving you a permanent history.
 
 ## How it works
 
+There are two modes. **API mode** (`login` + `watch`) is for the channel
+operator: it uses OAuth to read *your own* queue. **Scrape mode** (`scrape`) can
+be used by anyone to follow *any* publicly viewable queue — no account, no login,
+no credentials.
+
 - `login` performs the OAuth2 authorization-code flow via a short-lived local
   web server and stores your tokens in `tokens.json`.
 - `watch` polls `GET /1/song_requests/queue`, captures both the currently
