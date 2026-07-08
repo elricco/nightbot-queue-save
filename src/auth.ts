@@ -1,6 +1,6 @@
 import { existsSync, readFileSync, writeFileSync } from "node:fs";
 import { randomUUID } from "node:crypto";
-import { waitForOAuthCode } from "./oauth-callback.js";
+import { completeOAuth } from "./oauth-callback.js";
 import type { Config, Tokens } from "./types.js";
 
 const SCOPE = "song_requests_queue";
@@ -99,13 +99,15 @@ export async function getValidAccessToken(config: Config): Promise<string> {
 export async function login(config: Config): Promise<void> {
   const state = randomUUID();
   const authUrl = buildAuthorizeUrl(config, state);
-  const code = await waitForOAuthCode({
+  await completeOAuth({
     authUrl,
     redirectUri: config.redirectUri,
     state,
     label: "Nightbot",
+    onCode: async (code) => {
+      const tokens = await exchangeCode(config, code);
+      writeTokens(config.tokensPath, tokens);
+    },
   });
-  const tokens = await exchangeCode(config, code);
-  writeTokens(config.tokensPath, tokens);
   console.log(`Tokens saved to ${config.tokensPath}.`);
 }
