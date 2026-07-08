@@ -12,7 +12,7 @@ interface RawItem {
   track?: RawTrack;
   user?: { displayName?: string; name?: string };
 }
-interface RawQueue {
+export interface RawQueue {
   _currentSong?: RawItem;
   queue?: RawItem[];
 }

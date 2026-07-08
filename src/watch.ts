@@ -1,5 +1,5 @@
-import type { Config, Song } from "./types.js";
-import { extractSongs, fetchQueue } from "./nightbot.js";
+import type { Config, Song, WatchConfig } from "./types.js";
+import { extractSongs, fetchQueue, type RawQueue } from "./nightbot.js";
 import { getValidAccessToken, AuthError } from "./auth.js";
 import { readKnownTrackIds, appendSong } from "./csv.js";
 
@@ -15,7 +15,10 @@ export function collectNewSongs(response: unknown, known: Set<string>, nowIso: s
   return fresh;
 }
 
-export async function watch(config: Config): Promise<void> {
+export async function runWatchLoop(
+  config: WatchConfig,
+  fetchOnce: () => Promise<RawQueue>,
+): Promise<void> {
   const known = readKnownTrackIds(config.csvPath);
   console.log(`Loaded ${known.size} known track(s) from ${config.csvPath}.`);
   console.log(`Polling every ${config.pollIntervalSeconds}s. Press Ctrl-C to stop.`);
@@ -40,8 +43,7 @@ export async function watch(config: Config): Promise<void> {
 
   while (!stop) {
     try {
-      const accessToken = await getValidAccessToken(config);
-      const response = await fetchQueue(accessToken, config.apiBaseUrl);
+      const response = await fetchOnce();
       const fresh = collectNewSongs(response, known, new Date().toISOString());
       for (const song of fresh) {
         appendSong(config.csvPath, song);
@@ -66,4 +68,11 @@ export async function watch(config: Config): Promise<void> {
     if (stop) break;
     await sleep(config.pollIntervalSeconds * 1000);
   }
+}
+
+export async function watch(config: Config): Promise<void> {
+  await runWatchLoop(config, async () => {
+    const accessToken = await getValidAccessToken(config);
+    return fetchQueue(accessToken, config.apiBaseUrl);
+  });
 }
