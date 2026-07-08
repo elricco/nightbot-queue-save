@@ -27,3 +27,11 @@ export interface Tokens {
   refreshToken: string;
   expiresAt: number; // epoch ms when the access token expires
 }
+
+export interface YouTubeConfig {
+  clientId: string;
+  clientSecret: string;
+  redirectUri: string;
+  playlistId: string; // may be "" — feature is active only when non-empty
+  tokensPath: string;
+}

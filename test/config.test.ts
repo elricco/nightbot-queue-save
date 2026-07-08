@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { buildConfig, buildPublicConfig } from "../src/config.js";
+import { buildConfig, buildPublicConfig, buildYouTubeConfig } from "../src/config.js";
 
 describe("buildConfig", () => {
   it("applies defaults when optional vars are missing", () => {
@@ -79,5 +79,39 @@ describe("buildPublicConfig", () => {
     expect(() => buildPublicConfig({ PUBLIC_POLL_INTERVAL_SECONDS: "abc" }, "x")).toThrow(
       /PUBLIC_POLL_INTERVAL_SECONDS/,
     );
+  });
+});
+
+describe("buildYouTubeConfig", () => {
+  it("returns null when YouTube is entirely unconfigured", () => {
+    expect(buildYouTubeConfig({})).toBeNull();
+  });
+
+  it("builds config with defaults when client creds and playlist are set", () => {
+    const yt = buildYouTubeConfig({
+      YOUTUBE_CLIENT_ID: "cid",
+      YOUTUBE_CLIENT_SECRET: "csecret",
+      YOUTUBE_PLAYLIST_ID: "PL123",
+    });
+    expect(yt).toEqual({
+      clientId: "cid",
+      clientSecret: "csecret",
+      redirectUri: "http://localhost:8080/callback",
+      playlistId: "PL123",
+      tokensPath: "./youtube-tokens.json",
+    });
+  });
+
+  it("allows an empty playlistId when only creds are set (login before choosing a playlist)", () => {
+    const yt = buildYouTubeConfig({ YOUTUBE_CLIENT_ID: "cid", YOUTUBE_CLIENT_SECRET: "csecret" });
+    expect(yt?.playlistId).toBe("");
+  });
+
+  it("throws when a playlist is set but the client id is missing", () => {
+    expect(() => buildYouTubeConfig({ YOUTUBE_PLAYLIST_ID: "PL123" })).toThrow(/YOUTUBE_CLIENT_ID/);
+  });
+
+  it("throws when the client id is set but the secret is missing", () => {
+    expect(() => buildYouTubeConfig({ YOUTUBE_CLIENT_ID: "cid", YOUTUBE_PLAYLIST_ID: "PL123" })).toThrow(/YOUTUBE_CLIENT_SECRET/);
   });
 });

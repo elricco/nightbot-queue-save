@@ -2,6 +2,7 @@
 .env
 .env.local
 tokens.json
+youtube-tokens.json
 
 # Generierte Daten
 *.csv
