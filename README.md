@@ -11,6 +11,9 @@ UTF-8 CSV file, giving you a permanent history.
   web server and stores your tokens in `tokens.json`.
 - `watch` polls `GET /1/song_requests/queue`, captures both the currently
   playing song and every queued item, and appends songs it has not seen before.
+- `scrape <url>` watches any *publicly viewable* queue by its public URL (e.g.
+  `https://nightbot.tv/t/<username>/song_requests`) — no login required. It reads
+  the same public JSON the Nightbot website uses.
 - Songs are de-duplicated by their track/video ID, so each song is stored once
   even if it is requested multiple times.
 
@@ -67,6 +70,7 @@ If you just want to run the tool, grab the packaged release instead of cloning:
    | `NIGHTBOT_REDIRECT_URI`  | `http://localhost:8080/callback` | Must match the app registration. |
    | `POLL_INTERVAL_SECONDS`  | `5`                              | Queue poll interval. |
    | `CSV_PATH`               | `./song-requests.csv`            | Output CSV path. |
+   | `PUBLIC_POLL_INTERVAL_SECONDS` | `10`              | Poll interval for `scrape` mode. |
 
 ## Usage
 
@@ -83,6 +87,18 @@ If you just want to run the tool, grab the packaged release instead of cloning:
    ```
 
    Press `Ctrl-C` to stop. New songs are appended to the CSV as they appear.
+
+### Watch a public queue (no login)
+
+To follow someone else's publicly viewable queue, skip `login` and pass the
+public URL:
+
+```bash
+npm run scrape https://nightbot.tv/t/<username>/song_requests
+```
+
+Each channel is written to its own CSV (`./song-requests-<username>.csv` by
+default; `CSV_PATH` overrides). Press `Ctrl-C` to stop.
 
 ## CSV format
 
