@@ -1,5 +1,5 @@
 import { config as loadDotenv } from "dotenv";
-import type { Config } from "./types.js";
+import type { Config, WatchConfig } from "./types.js";
 
 export function buildConfig(env: Record<string, string | undefined>): Config {
   const clientId = env.NIGHTBOT_CLIENT_ID;
@@ -26,7 +26,30 @@ export function buildConfig(env: Record<string, string | undefined>): Config {
   };
 }
 
+export function buildPublicConfig(
+  env: Record<string, string | undefined>,
+  username: string,
+): WatchConfig {
+  const pollIntervalSeconds = Number(env.PUBLIC_POLL_INTERVAL_SECONDS ?? "10");
+  if (!Number.isFinite(pollIntervalSeconds) || pollIntervalSeconds <= 0) {
+    throw new Error(
+      `Invalid PUBLIC_POLL_INTERVAL_SECONDS: must be a positive number, got "${env.PUBLIC_POLL_INTERVAL_SECONDS}"`,
+    );
+  }
+
+  return {
+    pollIntervalSeconds,
+    csvPath: env.CSV_PATH ?? `./song-requests-${username}.csv`,
+    apiBaseUrl: "https://api.nightbot.tv",
+  };
+}
+
 export function loadConfig(): Config {
   loadDotenv();
   return buildConfig(process.env);
+}
+
+export function loadPublicConfig(username: string): WatchConfig {
+  loadDotenv();
+  return buildPublicConfig(process.env, username);
 }

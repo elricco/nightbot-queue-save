@@ -12,6 +12,7 @@ in eine UTF-8-CSV (mit BOM) schreibt. Details im Design-Spec unter
 
 - `npm run login` — OAuth2-Login (lokaler Callback-Server), schreibt `tokens.json`.
 - `npm run watch` — Polling-Schleife, hängt neue Songs an die CSV an.
+- `npm run scrape <url>` — Public-Mode: pollt eine öffentlich einsehbare Queue über ihre URL, ohne OAuth. Schreibt pro Channel eine eigene CSV.
 - `npm test` — Vitest-Unit-Tests.
 - `npm run typecheck` — `tsc --noEmit`.
 
@@ -21,8 +22,11 @@ in eine UTF-8-CSV (mit BOM) schreibt. Details im Design-Spec unter
 - `src/csv.ts` — RFC-4180 CSV (BOM), Dedup über `track_id` (Spalte 0).
 - `src/nightbot.ts` — `extractSongs` (aus `_currentSong` + `queue`), `fetchQueue`.
 - `src/auth.ts` — Authorize-URL, Token-Tausch/-Refresh, `tokens.json`, `login`.
-- `src/watch.ts` — `collectNewSongs` (rein, testbar) + `watch`-Schleife.
-- `src/index.ts` — CLI-Dispatch (`login` | `watch`).
+- `src/public.ts` — `parsePublicUrl`, `resolveChannelId`, `fetchPublicQueue`
+  (öffentliche Endpunkte, Header `Nightbot-Channel`).
+- `src/watch.ts` — `collectNewSongs` (rein, testbar), `runWatchLoop` (geteilte
+  Schleife) + `watch` (API) / `scrape` (Public).
+- `src/index.ts` — CLI-Dispatch (`login` | `watch` | `scrape`).
 
 ## Konventionen
 

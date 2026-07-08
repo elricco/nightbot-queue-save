@@ -1,11 +1,14 @@
-export interface Config {
+export interface WatchConfig {
+  pollIntervalSeconds: number;
+  csvPath: string;
+  apiBaseUrl: string;
+}
+
+export interface Config extends WatchConfig {
   clientId: string;
   clientSecret: string;
   redirectUri: string;
-  pollIntervalSeconds: number;
-  csvPath: string;
   tokensPath: string;
-  apiBaseUrl: string;
   authBaseUrl: string;
 }
 

@@ -13,6 +13,7 @@
   "scripts": {
     "login": "tsx src/index.ts login",
     "watch": "tsx src/index.ts watch",
+    "scrape": "tsx src/index.ts scrape",
     "start": "tsx src/index.ts",
     "test": "vitest run",
     "typecheck": "tsc --noEmit",
