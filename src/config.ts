@@ -19,7 +19,7 @@ export function buildConfig(env: Record<string, string | undefined>): Config {
     clientSecret,
     redirectUri: env.NIGHTBOT_REDIRECT_URI ?? "http://localhost:8080/callback",
     pollIntervalSeconds,
-    csvPath: env.CSV_PATH ?? "./song-requests.csv",
+    csvPath: env.CSV_PATH?.trim() || "./song-requests.csv",
     tokensPath: env.TOKENS_PATH ?? "./tokens.json",
     apiBaseUrl: "https://api.nightbot.tv",
     authBaseUrl: "https://api.nightbot.tv",
@@ -39,7 +39,7 @@ export function buildPublicConfig(
 
   return {
     pollIntervalSeconds,
-    csvPath: env.CSV_PATH ?? `./song-requests-${username}.csv`,
+    csvPath: env.CSV_PATH?.trim() || `./song-requests-${username}.csv`,
     apiBaseUrl: "https://api.nightbot.tv",
   };
 }
